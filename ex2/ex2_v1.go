@@ -14,10 +14,10 @@ func main() {
 	var arr = []int{2, 4, 6, 8, 10}
 
 	for _, value := range arr {
-		go square(value, chInt)
+		go square(value, chInt) // запускаем горутины, записывающие в канал умноженные значения
 	}
 
 	for i := 0; i < len(arr); i++ {
-		fmt.Fprintln(os.Stdout, <-chInt)
+		fmt.Fprintln(os.Stdout, <-chInt) // выводим умноженные данные из канала
 	}
 }

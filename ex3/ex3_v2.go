@@ -15,12 +15,12 @@ func main() {
 		wg.Add(1)
 		go func(m int) {
 			m *= m
-			w.Lock()
+			w.Lock() // блокируем мютекс на время запси суммы
 			sum += m
 			w.Unlock()
 			wg.Done()
 		}(value)
 	}
-	wg.Wait()
+	wg.Wait() // дожидаемся окончания работы горутин
 	fmt.Println(sum)
 }

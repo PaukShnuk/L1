@@ -6,17 +6,17 @@ import (
 )
 
 func squarer(rCh chan int, sqCh chan int) {
-	for value := range rCh {
-		sqCh <- value * 2
+	for value := range rCh { // получаем данные из первого канала пока он не закроется
+		sqCh <- value * 2 // отправляем умноженные данные во второй канал
 	}
-	close(sqCh)
+	close(sqCh) // закрываем второй канал
 }
 
 func printer(sqCh chan int, s chan struct{}) {
-	for value := range sqCh {
+	for value := range sqCh { // печаем данные из второго канала пока его не закрыли и мы всё не считали
 		fmt.Fprintln(os.Stdout, value)
 	}
-	close(s)
+	close(s) // закрываем синхронизирующий канал
 }
 
 func main() {
@@ -25,13 +25,13 @@ func main() {
 	squareCh := make(chan int)
 	s := make(chan struct{})
 
-	go squarer(readCh, squareCh)
-	go printer(squareCh, s)
+	go squarer(readCh, squareCh) // запускаем умножитель
+	go printer(squareCh, s)      // запускаем принтер
 
 	for _, value := range arr {
-		readCh <- value
+		readCh <- value // отправляем данные из массива в первый канал
 	}
 	close(readCh)
-	<-s
+	<-s // ожидаем пока принтер допечатает все значения и закроет канал S
 
 }
